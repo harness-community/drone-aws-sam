@@ -1,0 +1,10 @@
+FROM alpine:latest
+
+RUN apk get update && \
+    apk add --no-cache python3 py3-pip ca-certificates
+
+RUN pip install aws-sam-cli --break-system-packages
+
+ADD release/linux/amd64/plugin /bin/
+
+ENTRYPOINT ["/bin/plugin"]
