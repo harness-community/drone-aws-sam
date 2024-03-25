@@ -7,13 +7,6 @@ package plugin
 import "fmt"
 
 func verifyArgs(args Args) error {
-	if args.AWSAccessKey == "" {
-		return fmt.Errorf("missing AWS access key")
-	}
-	if args.AWSSecretKey == "" {
-		return fmt.Errorf("missing AWS secret key")
-	}
-
 	if args.TemplateFilePath == "" {
 		return fmt.Errorf("missing template file path")
 	}

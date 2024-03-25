@@ -17,8 +17,6 @@ type Args struct {
 	// Level defines the plugin log level.
 	Level string `envconfig:"PLUGIN_LOG_LEVEL"`
 
-	AWSAccessKey            string `envconfig:"PLUGIN_AWS_ACCESS_KEY"`
-	AWSSecretKey            string `envconfig:"PLUGIN_AWS_SECRET_KEY"`
 	BuildImage              string `envconfig:"PLUGIN_BUILD_IMAGE"`
 	TemplateFilePath        string `envconfig:"PLUGIN_TEMPLATE_FILE_PATH"`
 	BuildCommandOptions     string `envconfig:"PLUGIN_BUILD_COMMAND_OPTIONS"`
