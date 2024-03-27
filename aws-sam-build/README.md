@@ -1,52 +1,75 @@
-A plugin to .
+# drone-aws-sam-build
 
-# Usage
+- [Synopsis](#Synopsis)
+- [Parameters](#Parameters)
+- [Notes](#Notes)
+- [Plugin Image](#Plugin-Image)
+- [Examples](#Examples)
 
-The following settings changes this plugin's behavior.
+## Synopsis
 
-* param1 (optional) does something.
-* param2 (optional) does something different.
+This plugin enables building AWS Serverless Application Model (SAM) applications using the `sam build` command. It supports various options for building, including using a specific Docker image, providing build command options, and authenticating with a private Docker registry.
 
-Below is an example `.drone.yml` that uses this plugin.
+## Parameters
 
-```yaml
-kind: pipeline
-name: default
+| Parameter                                                                                                                        | Choices/<span style="color:blue;">Defaults</span> | Comments                                                          |
+| :------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------ | ----------------------------------------------------------------- |
+| BUILD_IMAGE <span style="font-size: 10px"><br/>`string`</span>                                                                   |                                                   | The Docker image to use for building the SAM application.         |
+| TEMPLATE_FILE_PATH <span style="font-size: 10px"><br/>`string`</span> <span style="color:red; font-size: 10px">`required`</span> |                                                   | The path to the SAM template file.                                |
+| BUILD_COMMAND_OPTIONS <span style="font-size: 10px"><br/>`string`</span>                                                         |                                                   | Additional options for the `sam build` command.                   |
+| PRIVATE_REGISTRY_URL <span style="font-size: 10px"><br/>`string`</span>                                                          |                                                   | The URL of the private Docker registry.                           |
+| PRIVATE_REGISTRY_USERNAME <span style="font-size: 10px"><br/>`string`</span>                                                     |                                                   | The username for authenticating with the private Docker registry. |
+| PRIVATE_REGISTRY_PASSWORD <span style="font-size: 10px"><br/>`string`</span>                                                     |                                                   | The password for authenticating with the private Docker registry. |
 
-steps:
-- name: run harnesscommunity/aws-sam-build plugin
-  image: harnesscommunity/aws-sam-build
-  pull: if-not-exists
-  settings:
-    param1: foo
-    param2: bar
+## Notes
+
+- If `BUILD_IMAGE` is provided, the `sam build` command will use the specified Docker image for building the SAM application.
+- If `PRIVATE_REGISTRY_URL`, `PRIVATE_REGISTRY_USERNAME`, and `PRIVATE_REGISTRY_PASSWORD` are provided, the plugin will authenticate with the specified private Docker registry before building the SAM application.
+
+## Plugin Image
+
+The plugin `harnesscommunitytest/aws-sam-build` is available for the following architectures:
+
+| OS          | Tag      |
+| ----------- | -------- |
+| linux-amd64 | `latest` |
+
+## Examples
+
 ```
+    - step:
+        type: Plugin
+        name: aws-sam-build
+        identifier: sam_plugin
+        spec:
+                connectorRef: <connector>
+                image: harnesscommunitytest/aws-sam-build
+                settings:
+                    TEMPLATE_FILE_PATH: template.yaml
+                    BUILD_IMAGE: public.ecr.aws/sam/build-python3.9:1.112.0-20240313001230
 
-# Building
 
-Build the plugin binary:
+    - step:
+        type: Plugin
+        name: aws-sam-build
+        identifier: sam_plugin
+        spec:
+                connectorRef: <connector>
+                image: harnesscommunitytest/aws-sam-build
+                settings:
+                    TEMPLATE_FILE_PATH: template.yaml
 
-```text
-scripts/build.sh
-```
-
-Build the plugin image:
-
-```text
-docker build -t harnesscommunity/aws-sam-build -f docker/Dockerfile .
-```
-
-# Testing
-
-Execute the plugin from your current working directory:
-
-```text
-docker run --rm -e PLUGIN_PARAM1=foo -e PLUGIN_PARAM2=bar \
-  -e DRONE_COMMIT_SHA=8f51ad7884c5eb69c11d260a31da7a745e6b78e2 \
-  -e DRONE_COMMIT_BRANCH=master \
-  -e DRONE_BUILD_NUMBER=43 \
-  -e DRONE_BUILD_STATUS=success \
-  -w /drone/src \
-  -v $(pwd):/drone/src \
-  harnesscommunity/aws-sam-build
+    - step:
+        type: Plugin
+        name: aws-sam-build
+        identifier: sam_plugin
+        spec:
+                connectorRef: <connector>
+                image: harnesscommunitytest/aws-sam-build
+                settings:
+                    TEMPLATE_FILE_PATH: template.yaml
+                    BUILD_IMAGE: image
+                    PRIVATE_REGISTRY_URL: registry-url
+                    PRIVATE_REGISTRY_USERNAME: username
+                    PRIVATE_REGISTRY_PASSWORD: password
 ```
