@@ -1,52 +1,123 @@
-A plugin to .
+# drone-aws-sam-deploy
 
-# Usage
+- [Synopsis](#Synopsis)
+- [Parameters](#Parameters)
+- [Notes](#Notes)
+- [Plugin Image](#Plugin-Image)
+- [Examples](#Examples)
 
-The following settings changes this plugin's behavior.
+## Synopsis
 
-* param1 (optional) does something.
-* param2 (optional) does something different.
+This plugin enables the deployment of AWS Serverless Application Model (SAM) applications. It provides various options for authenticating with AWS, including using access keys, session tokens, and assuming roles with or without web identity tokens.
 
-Below is an example `.drone.yml` that uses this plugin.
+## Parameters
 
-```yaml
-kind: pipeline
-name: default
+| Parameter                                                                                                                        | Choices/<span style="color:blue;">Defaults</span> | Comments                                         |
+| :------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------ | ------------------------------------------------ |
+| AWS_ACCESS_KEY <span style="font-size: 10px"><br/>`string`</span>                                                                |                                                   | The AWS access key for authentication.           |
+| AWS_SECRET_KEY <span style="font-size: 10px"><br/>`string`</span>                                                                |                                                   | The AWS secret key for authentication.           |
+| AWS_SESSION_TOKEN <span style="font-size: 10px"><br/>`string`</span>                                                             |                                                   | The AWS session token for authentication.        |
+| AWS_STS_EXTERNAL_ID <span style="font-size: 10px"><br/>`string`</span>                                                           |                                                   | The external ID for assuming a role with STS.    |
+| AWS_ROLE_ARN <span style="font-size: 10px"><br/>`string`</span>                                                                  |                                                   | The ARN of the AWS role to assume.               |
+| AWS_REGION <span style="font-size: 10px"><br/>`string`</span>                                                                    |                                                   | The AWS region for deployment.                   |
+| TEMPLATE_FILE_PATH <span style="font-size: 10px"><br/>`string`</span> <span style="color:red; font-size: 10px">`required`</span> |                                                   | The path to the SAM template file.               |
+| STACK_NAME <span style="font-size: 10px"><br/>`string`</span> <span style="color:red; font-size: 10px">`required`</span>         |                                                   | The name of the AWS CloudFormation stack.        |
+| S3_BUCKET <span style="font-size: 10px"><br/>`string`</span> <span style="color:red; font-size: 10px">`required`</span>          |                                                   | The S3 bucket for deployment artifacts.          |
+| DEPLOY_COMMAND_OPTIONS <span style="font-size: 10px"><br/>`string`</span>                                                        |                                                   | Additional options for the `sam deploy` command. |
 
-steps:
-- name: run harnesscommunity/aws-sam-build plugin
-  image: harnesscommunity/aws-sam-build
-  pull: if-not-exists
-  settings:
-    param1: foo
-    param2: bar
+## Notes
+
+- If `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` are provided, the plugin will attempt to authenticate using these credentials.
+- If `AWS_ROLE_ARN` is provided along with `AWS_ACCESS_KEY` and `AWS_SECRET_KEY`, the plugin will assume the specified role before deploying.
+- If `AWS_SESSION_TOKEN` is provided, it will be used along with the access key and secret key for authentication.
+- If you're only using `AWS_ROLE_ARN`, make sure that `AWS_WEB_IDENTITY_TOKEN_FILE` is already present.
+
+## Plugin Image
+
+The plugin `harnesscommunitytest/aws-sam-deploy` is available for the following architectures:
+
+| OS          | Tag      |
+| ----------- | -------- |
+| linux-amd64 | `latest` |
+
+## Examples
+
 ```
+    - step:
+        type: Plugin
+        name: aws-sam-deploy
+        identifier: sam_plugin
+        spec:
+                connectorRef: <connector>
+                image: harnesscommunitytest/aws-sam-deploy
+                settings:
+                    AWS_ACCESS_KEY: ACCESS_KEY
+                    AWS_SECRET_KEY: SECRET_KEY
+                    AWS_REGION: us-east-1
+                    STACK_NAME: aws-sam
+                    S3_BUCKET: sam-plugin
+                    TEMPLATE_FILE_PATH: template.yaml
 
-# Building
+    - step:
+        type: Plugin
+        name: aws-sam-deploy
+        identifier: sam_plugin
+        spec:
+                connectorRef: <connector>
+                image: harnesscommunitytest/aws-sam-deploy
+                settings:
+                    AWS_ACCESS_KEY: ACCESS_KEY
+                    AWS_SECRET_KEY: SECRET_KEY
+                    AWS_SESSION_TOKEN: SESSION_TOKEN
+                    AWS_REGION: us-east-1
+                    STACK_NAME: aws-sam
+                    S3_BUCKET: sam-plugin
+                    TEMPLATE_FILE_PATH: template.yaml
 
-Build the plugin binary:
+    - step:
+        type: Plugin
+        name: aws-sam-deploy
+        identifier: sam_plugin
+        spec:
+                connectorRef: <connector>
+                image: harnesscommunitytest/aws-sam-deploy
+                settings:
+                    AWS_ACCESS_KEY: ACCESS_KEY
+                    AWS_SECRET_KEY: SECRET_KEY
+                    AWS_REGION: us-east-1
+                    STACK_NAME: aws-sam
+                    S3_BUCKET: sam-plugin
+                    TEMPLATE_FILE_PATH: template.yaml
+                    AWS_ROLE_ARN: arn-role
 
-```text
-scripts/build.sh
-```
+    - step:
+        type: Plugin
+        name: aws-sam-deploy
+        identifier: sam_plugin
+        spec:
+                connectorRef: <connector>
+                image: harnesscommunitytest/aws-sam-deploy
+                settings:
+                    AWS_ACCESS_KEY: ACCESS_KEY
+                    AWS_SECRET_KEY: SECRET_KEY
+                    AWS_SESSION_TOKEN: SESSION_TOKEN
+                    AWS_REGION: us-east-1
+                    STACK_NAME: aws-sam
+                    S3_BUCKET: sam-plugin
+                    TEMPLATE_FILE_PATH: template.yaml
+                    AWS_ROLE_ARN: arn-role
 
-Build the plugin image:
-
-```text
-docker build -t harnesscommunity/aws-sam-build -f docker/Dockerfile .
-```
-
-# Testing
-
-Execute the plugin from your current working directory:
-
-```text
-docker run --rm -e PLUGIN_PARAM1=foo -e PLUGIN_PARAM2=bar \
-  -e DRONE_COMMIT_SHA=8f51ad7884c5eb69c11d260a31da7a745e6b78e2 \
-  -e DRONE_COMMIT_BRANCH=master \
-  -e DRONE_BUILD_NUMBER=43 \
-  -e DRONE_BUILD_STATUS=success \
-  -w /drone/src \
-  -v $(pwd):/drone/src \
-  harnesscommunity/aws-sam-build
+    - step:
+        type: Plugin
+        name: aws-sam-deploy
+        identifier: sam_plugin
+        spec:
+                connectorRef: <connector>
+                image: harnesscommunitytest/aws-sam-deploy
+                settings:
+                    AWS_REGION: us-east-1
+                    STACK_NAME: aws-sam
+                    S3_BUCKET: sam-plugin
+                    TEMPLATE_FILE_PATH: template.yaml
+                    AWS_ROLE_ARN: arn-role
 ```
