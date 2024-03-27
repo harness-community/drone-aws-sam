@@ -27,8 +27,8 @@ type Args struct {
 
 // Exec executes the plugin.
 func Exec(ctx context.Context, args Args) error {
-	if err := verifyArgs(args); err != nil {
-		return err
+	if args.TemplateFilePath == "" {
+		args.TemplateFilePath = "./template.yaml"
 	}
 
 	if args.PrivateRegistryURL != "" {

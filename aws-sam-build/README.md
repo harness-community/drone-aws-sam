@@ -24,7 +24,7 @@ This plugin enables building AWS Serverless Application Model (SAM) applications
 ## Notes
 
 - If `BUILD_IMAGE` is provided, the `sam build` command will use the specified Docker image for building the SAM application.
-- If `PRIVATE_REGISTRY_URL`, `PRIVATE_REGISTRY_USERNAME`, and `PRIVATE_REGISTRY_PASSWORD` are provided, the plugin will authenticate with the specified private Docker registry before building the SAM application.
+- If you're using a private image, provide `PRIVATE_REGISTRY_URL`, `PRIVATE_REGISTRY_USERNAME`, and `PRIVATE_REGISTRY_PASSWORD`.
 
 ## Plugin Image
 

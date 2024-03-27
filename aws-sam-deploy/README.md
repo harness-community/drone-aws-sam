@@ -30,7 +30,7 @@ This plugin enables the deployment of AWS Serverless Application Model (SAM) app
 - If `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` are provided, the plugin will attempt to authenticate using these credentials.
 - If `AWS_ROLE_ARN` is provided along with `AWS_ACCESS_KEY` and `AWS_SECRET_KEY`, the plugin will assume the specified role before deploying.
 - If `AWS_SESSION_TOKEN` is provided, it will be used along with the access key and secret key for authentication.
-- If you're only using `AWS_ROLE_ARN`, make sure that `AWS_WEB_IDENTITY_TOKEN_FILE` is already present.
+- If you're only using `AWS_ROLE_ARN`, make sure your build node is `EKS Cluser`.
 
 ## Plugin Image
 
@@ -60,7 +60,7 @@ The plugin `harnesscommunitytest/aws-sam-deploy` is available for the following 
 
     - step:
         type: Plugin
-        name: aws-sam-deploy
+        name: aws-sam-deploy-with-access-secret-and-session
         identifier: sam_plugin
         spec:
                 connectorRef: <connector>
@@ -76,7 +76,7 @@ The plugin `harnesscommunitytest/aws-sam-deploy` is available for the following 
 
     - step:
         type: Plugin
-        name: aws-sam-deploy
+        name: aws-sam-deploy-with-access-key-secret-and-arn
         identifier: sam_plugin
         spec:
                 connectorRef: <connector>
@@ -88,28 +88,11 @@ The plugin `harnesscommunitytest/aws-sam-deploy` is available for the following 
                     STACK_NAME: aws-sam
                     S3_BUCKET: sam-plugin
                     TEMPLATE_FILE_PATH: template.yaml
-                    AWS_ROLE_ARN: arn-role
+                    AWS_ROLE_ARN: arn:aws:iam::account:user
 
     - step:
         type: Plugin
-        name: aws-sam-deploy
-        identifier: sam_plugin
-        spec:
-                connectorRef: <connector>
-                image: harnesscommunitytest/aws-sam-deploy
-                settings:
-                    AWS_ACCESS_KEY: ACCESS_KEY
-                    AWS_SECRET_KEY: SECRET_KEY
-                    AWS_SESSION_TOKEN: SESSION_TOKEN
-                    AWS_REGION: us-east-1
-                    STACK_NAME: aws-sam
-                    S3_BUCKET: sam-plugin
-                    TEMPLATE_FILE_PATH: template.yaml
-                    AWS_ROLE_ARN: arn-role
-
-    - step:
-        type: Plugin
-        name: aws-sam-deploy
+        name: aws-sam-deploy-with-arn-only
         identifier: sam_plugin
         spec:
                 connectorRef: <connector>
@@ -119,5 +102,5 @@ The plugin `harnesscommunitytest/aws-sam-deploy` is available for the following 
                     STACK_NAME: aws-sam
                     S3_BUCKET: sam-plugin
                     TEMPLATE_FILE_PATH: template.yaml
-                    AWS_ROLE_ARN: arn-role
+                    AWS_ROLE_ARN: arn:aws:iam::account:user
 ```
