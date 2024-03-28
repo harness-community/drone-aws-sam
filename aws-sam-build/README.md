@@ -12,19 +12,20 @@ This plugin enables building AWS Serverless Application Model (SAM) applications
 
 ## Parameters
 
-| Parameter                                                                                                                        | Choices/<span style="color:blue;">Defaults</span> | Comments                                                          |
-| :------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------ | ----------------------------------------------------------------- |
-| BUILD_IMAGE <span style="font-size: 10px"><br/>`string`</span>                                                                   |                                                   | The Docker image to use for building the SAM application.         |
-| TEMPLATE_FILE_PATH <span style="font-size: 10px"><br/>`string`</span> <span style="color:red; font-size: 10px">`required`</span> |                                                   | The path to the SAM template file.                                |
-| BUILD_COMMAND_OPTIONS <span style="font-size: 10px"><br/>`string`</span>                                                         |                                                   | Additional options for the `sam build` command.                   |
-| PRIVATE_REGISTRY_URL <span style="font-size: 10px"><br/>`string`</span>                                                          |                                                   | The URL of the private Docker registry.                           |
-| PRIVATE_REGISTRY_USERNAME <span style="font-size: 10px"><br/>`string`</span>                                                     |                                                   | The username for authenticating with the private Docker registry. |
-| PRIVATE_REGISTRY_PASSWORD <span style="font-size: 10px"><br/>`string`</span>                                                     |                                                   | The password for authenticating with the private Docker registry. |
+| Parameter                                                                    | Choices/<span style="color:blue;">Defaults</span> | Comments                                                          |
+| :--------------------------------------------------------------------------- | :------------------------------------------------ | ----------------------------------------------------------------- |
+| BUILD_IMAGE <span style="font-size: 10px"><br/>`string`</span>               |                                                   | The Docker image to use for building the SAM application.         |
+| TEMPLATE_FILE_PATH <span style="font-size: 10px"><br/>`string`</span>        | `template.yaml`/`template.yml`                    | The path to the SAM template file.                                |
+| BUILD_COMMAND_OPTIONS <span style="font-size: 10px"><br/>`string`</span>     |                                                   | Additional options for the `sam build` command.                   |
+| PRIVATE_REGISTRY_URL <span style="font-size: 10px"><br/>`string`</span>      |                                                   | The URL of the private Docker registry.                           |
+| PRIVATE_REGISTRY_USERNAME <span style="font-size: 10px"><br/>`string`</span> |                                                   | The username for authenticating with the private Docker registry. |
+| PRIVATE_REGISTRY_PASSWORD <span style="font-size: 10px"><br/>`string`</span> |                                                   | The password for authenticating with the private Docker registry. |
 
 ## Notes
 
 - If `BUILD_IMAGE` is provided, the `sam build` command will use the specified Docker image for building the SAM application.
 - If you're using a private image, provide `PRIVATE_REGISTRY_URL`, `PRIVATE_REGISTRY_USERNAME`, and `PRIVATE_REGISTRY_PASSWORD`.
+- If you're running this plugin in a kubernetes pod and using a custom docker build image, make sure to mount the path `/var/run/docker.sock`.
 
 ## Plugin Image
 

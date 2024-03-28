@@ -7,6 +7,7 @@ package plugin
 import (
 	"context"
 	"fmt"
+	"os"
 	"os/exec"
 )
 
@@ -28,7 +29,11 @@ type Args struct {
 // Exec executes the plugin.
 func Exec(ctx context.Context, args Args) error {
 	if args.TemplateFilePath == "" {
-		args.TemplateFilePath = "./template.yaml"
+		if _, err := os.Stat("./template.yaml"); err == nil {
+			args.TemplateFilePath = "./template.yaml"
+		} else if _, err := os.Stat("./template.yml"); err == nil {
+			args.TemplateFilePath = "./template.yml"
+		}
 	}
 
 	if args.PrivateRegistryURL != "" {
