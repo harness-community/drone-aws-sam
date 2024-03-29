@@ -31,8 +31,7 @@ This plugin enables the deployment of AWS Serverless Application Model (SAM) app
 - There are several ways of authenticating with AWS:
   - `AWS_ACCESS_KEY` and `AWS_SECRET_KEY`
   - `AWS_ROLE_ARN`, `AWS_ACCESS_KEY` and `AWS_SECRET_KEY`
-  - `AWS_ROLE_ARN`, `AWS_ACCESS_KEY`, `AWS_SECRET_KEY` and `AWS_SESSION_TOKEN`
-  - `AWS_ROLE_ARN` with `AWS_WEB_IDENTITY_TOKEN_FILE` already present
+  - Only `AWS_ROLE_ARN` when EKS Cluster is already configured with required permissions and that `AWS_WEB_IDENTITY_TOKEN_FILE` is already present
 
 ## Plugin Image
 
@@ -92,22 +91,6 @@ The plugin `harnesscommunitytest/aws-sam-deploy` is available for the following 
                     TEMPLATE_FILE_PATH: template.yaml
                     AWS_ROLE_ARN: arn-role
 
-    - step:
-        type: Plugin
-        name: aws-sam-deploy
-        identifier: sam_plugin
-        spec:
-                connectorRef: <connector>
-                image: harnesscommunitytest/aws-sam-deploy
-                settings:
-                    AWS_ACCESS_KEY: ACCESS_KEY
-                    AWS_SECRET_KEY: SECRET_KEY
-                    AWS_SESSION_TOKEN: SESSION_TOKEN
-                    AWS_REGION: us-east-1
-                    STACK_NAME: aws-sam
-                    S3_BUCKET: sam-plugin
-                    TEMPLATE_FILE_PATH: template.yaml
-                    AWS_ROLE_ARN: arn-role
 
     - step:
         type: Plugin
