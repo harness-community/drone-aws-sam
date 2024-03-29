@@ -1,0 +1,12 @@
+FROM docker:dind
+
+WORKDIR /app 
+
+RUN apk get update && \
+    apk add --no-cache bash python3 py3-pip
+
+RUN pip install aws-sam-cli --break-system-packages
+ADD release/linux/amd64/plugin /bin/
+
+
+ENTRYPOINT ["/bin/plugin"]
