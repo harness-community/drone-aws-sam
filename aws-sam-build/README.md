@@ -29,7 +29,7 @@ This plugin enables building AWS Serverless Application Model (SAM) applications
 
 ## Plugin Image
 
-The plugin `harnesscommunitytest/aws-sam-build` is available for the following architectures:
+The plugin `plugins/aws-sam-build` is available for the following architectures:
 
 | OS          | Tag      |
 | ----------- | -------- |
