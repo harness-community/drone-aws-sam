@@ -44,10 +44,10 @@ The plugin `harnesscommunitytest/aws-sam-build` is available for the following a
         identifier: sam_plugin
         spec:
                 connectorRef: <connector>
-                image: harnesscommunitytest/aws-sam-build
+                image: plugins/aws-sam-build:latest
                 settings:
-                    TEMPLATE_FILE_PATH: template.yaml
-                    BUILD_IMAGE: public.ecr.aws/sam/build-python3.9:1.112.0-20240313001230
+                    template_file_path: template.yaml
+                    build_image: public.ecr.aws/sam/build-python3.9:1.112.0-20240313001230
 
 
     - step:
@@ -56,9 +56,9 @@ The plugin `harnesscommunitytest/aws-sam-build` is available for the following a
         identifier: sam_plugin
         spec:
                 connectorRef: <connector>
-                image: harnesscommunitytest/aws-sam-build
+                image: plugins/aws-sam-build:latest
                 settings:
-                    TEMPLATE_FILE_PATH: template.yaml
+                    template_file_path: template.yaml
 
     - step:
         type: Plugin
@@ -66,11 +66,11 @@ The plugin `harnesscommunitytest/aws-sam-build` is available for the following a
         identifier: sam_plugin
         spec:
                 connectorRef: <connector>
-                image: harnesscommunitytest/aws-sam-build
+                image: plugins/aws-sam-build:latest
                 settings:
-                    TEMPLATE_FILE_PATH: template.yaml
-                    BUILD_IMAGE: image
-                    PRIVATE_REGISTRY_URL: registry-url
-                    PRIVATE_REGISTRY_USERNAME: username
-                    PRIVATE_REGISTRY_PASSWORD: password
+                    template_file_path: template.yaml
+                    build_image: image
+                    private_registry_url: registry-url
+                    private_registry_username: username
+                    private_registry_password: password
 ```
