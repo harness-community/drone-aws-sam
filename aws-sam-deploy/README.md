@@ -30,12 +30,12 @@ This plugin enables the deployment of AWS Serverless Application Model (SAM) app
 
 - There are several ways of authenticating with AWS:
   - `AWS_ACCESS_KEY` and `AWS_SECRET_KEY`
-  - `AWS_ROLE_ARN`, `AWS_ACCESS_KEY` and `AWS_SECRET_KEY`
+  - `AWS_ACCESS_KEY`, `AWS_SECRET_KEY`, and `AWS_SESSION_TOKEN`, 
   - Only `AWS_ROLE_ARN` when EKS Cluster is already configured with required permissions and that `AWS_WEB_IDENTITY_TOKEN_FILE` is already present
 
 ## Plugin Image
 
-The plugin `harnesscommunitytest/aws-sam-deploy` is available for the following architectures:
+The plugin `plugins/aws-sam-deploy` is available for the following architectures:
 
 | OS          | Tag      |
 | ----------- | -------- |
@@ -50,14 +50,14 @@ The plugin `harnesscommunitytest/aws-sam-deploy` is available for the following 
         identifier: sam_plugin
         spec:
                 connectorRef: <connector>
-                image: harnesscommunitytest/aws-sam-deploy
+                image: plugins/aws-sam-deploy:latest
                 settings:
-                    AWS_ACCESS_KEY: ACCESS_KEY
-                    AWS_SECRET_KEY: SECRET_KEY
-                    AWS_REGION: us-east-1
-                    STACK_NAME: aws-sam
-                    S3_BUCKET: sam-plugin
-                    TEMPLATE_FILE_PATH: template.yaml
+                    aws_access_key: ACCESS_KEY
+                    aws_secret_key: SECRET_KEY
+                    aws_region: us-east-1
+                    stack_name: aws-sam
+                    s3_bucket: sam-plugin
+                    template_file_path: template.yaml
 
     - step:
         type: Plugin
@@ -65,15 +65,15 @@ The plugin `harnesscommunitytest/aws-sam-deploy` is available for the following 
         identifier: sam_plugin
         spec:
                 connectorRef: <connector>
-                image: harnesscommunitytest/aws-sam-deploy
+                image: plugins/aws-sam-deploy:latest
                 settings:
-                    AWS_ACCESS_KEY: ACCESS_KEY
-                    AWS_SECRET_KEY: SECRET_KEY
-                    AWS_SESSION_TOKEN: SESSION_TOKEN
-                    AWS_REGION: us-east-1
-                    STACK_NAME: aws-sam
-                    S3_BUCKET: sam-plugin
-                    TEMPLATE_FILE_PATH: template.yaml
+                    aws_access_key: ACCESS_KEY
+                    aws_secret_key: SECRET_KEY
+                    aws_session_token: SESSION_TOKEN
+                    aws_region: us-east-1
+                    stack_name: aws-sam
+                    s3_bucket: sam-plugin
+                    template_file_path: template.yaml
 
     - step:
         type: Plugin
@@ -81,15 +81,15 @@ The plugin `harnesscommunitytest/aws-sam-deploy` is available for the following 
         identifier: sam_plugin
         spec:
                 connectorRef: <connector>
-                image: harnesscommunitytest/aws-sam-deploy
+                image: plugins/aws-sam-deploy:latest
                 settings:
-                    AWS_ACCESS_KEY: ACCESS_KEY
-                    AWS_SECRET_KEY: SECRET_KEY
-                    AWS_REGION: us-east-1
-                    STACK_NAME: aws-sam
-                    S3_BUCKET: sam-plugin
-                    TEMPLATE_FILE_PATH: template.yaml
-                    AWS_ROLE_ARN: arn-role
+                    aws_access_key: ACCESS_KEY
+                    aws_secret_key: SECRET_KEY
+                    aws_region: us-east-1
+                    stack_name: aws-sam
+                    s3_bucket: sam-plugin
+                    template_file_path: template.yaml
+                    aws_role_arn: arn-role
 
 
     - step:
@@ -98,11 +98,11 @@ The plugin `harnesscommunitytest/aws-sam-deploy` is available for the following 
         identifier: sam_plugin
         spec:
                 connectorRef: <connector>
-                image: harnesscommunitytest/aws-sam-deploy
+                image: plugins/aws-sam-deploy:latest
                 settings:
-                    AWS_REGION: us-east-1
-                    STACK_NAME: aws-sam
-                    S3_BUCKET: sam-plugin
-                    TEMPLATE_FILE_PATH: template.yaml
-                    AWS_ROLE_ARN: arn-role
+                    aws_region: us-east-1
+                    stack_name: aws-sam
+                    s3_bucket: sam-plugin
+                    template_file_path: template.yaml
+                    aws_role_arn: arn-role
 ```
