@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+
+	"github.com/google/shlex"
 )
 
 // Args provides plugin execution arguments.
@@ -42,13 +44,27 @@ func Exec(ctx context.Context, args Args) error {
 		}
 	}
 
-	var cmd *exec.Cmd
+	// Create the initial command slice
+	commandArgs := []string{"sam", "build"}
 
+	// Include build image option if provided
 	if args.BuildImage != "" {
-		cmd = exec.Command("sam", "build", "--use-container", "--build-image", args.BuildImage, "--template-file", args.TemplateFilePath, args.BuildCommandOptions)
-	} else {
-		cmd = exec.Command("sam", "build", "--template-file", args.TemplateFilePath, args.BuildCommandOptions)
+		commandArgs = append(commandArgs, "--use-container", "--build-image", args.BuildImage)
 	}
+
+	// Include the template file path
+	commandArgs = append(commandArgs, "--template-file", args.TemplateFilePath)
+
+	// Add the build command options by parsing them correctly respecting quotes
+	if args.BuildCommandOptions != "" {
+		options, err := shlex.Split(args.BuildCommandOptions)
+		if err != nil {
+			return fmt.Errorf("error parsing build command options: %v", err)
+		}
+		commandArgs = append(commandArgs, options...)
+	}
+
+	cmd := exec.CommandContext(ctx, commandArgs[0], commandArgs[1:]...)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
