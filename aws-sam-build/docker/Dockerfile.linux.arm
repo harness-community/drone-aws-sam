@@ -6,5 +6,5 @@ ENV GODEBUG netdns=go
 
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-ADD release/linux/arm/plugin /bin/
+ADD aws-sam-build/release/linux/arm/plugin /bin/
 ENTRYPOINT ["/bin/plugin"]
