@@ -3,7 +3,8 @@ FROM docker:dind
 WORKDIR /app 
 
 RUN apk get update && \
-    apk add --no-cache bash python3 py3-pip gcc
+    apk add --no-cache bash python3 py3-pip gcc \
+    python3-dev libffi-dev
 
 RUN pip install aws-sam-cli --break-system-packages
 ADD aws-sam-build/release/linux/arm64/plugin /bin/
