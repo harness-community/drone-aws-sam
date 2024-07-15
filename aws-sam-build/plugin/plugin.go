@@ -66,12 +66,12 @@ func Exec(ctx context.Context, args Args) error {
 
 	cmd := exec.CommandContext(ctx, commandArgs[0], commandArgs[1:]...)
 
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		return fmt.Errorf("error executing command: %v\nOutput:\n%s", err, output)
-	}
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
-	fmt.Println(string(output))
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("error executing command: %v", err)
+	}
 
 	return nil
 }
