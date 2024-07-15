@@ -223,12 +223,12 @@ func Exec(ctx context.Context, args Args) error {
 		cmd = exec.Command("sam", "deploy", "--region", args.AWSRegion, "--template-file", args.TemplateFilePath, "--stack-name", args.StackName, "--s3-bucket", args.S3Bucket, args.DeployCommandOptions, "--no-confirm-changeset")
 	}
 
-	output, err := cmd.CombinedOutput()
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
-	if err != nil {
-		return fmt.Errorf("error executing command: %v\nOutput:\n%s", err, output)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("error executing command: %v", err)
 	}
 
-	fmt.Println(string(output))
 	return nil
 }
