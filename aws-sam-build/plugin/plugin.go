@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/google/shlex"
 )
@@ -23,6 +24,7 @@ type Args struct {
 	BuildImage              string `envconfig:"PLUGIN_BUILD_IMAGE"`
 	TemplateFilePath        string `envconfig:"PLUGIN_TEMPLATE_FILE_PATH"`
 	BuildCommandOptions     string `envconfig:"PLUGIN_BUILD_COMMAND_OPTIONS"`
+	ContainerEnvVarFile     string `envconfig:"PLUGIN_CONTAINER_ENV_VAR_FILE"`
 	PrivateRegistryURL      string `envconfig:"PLUGIN_PRIVATE_REGISTRY_URL"`
 	PrivateRegistryUsername string `envconfig:"PLUGIN_PRIVATE_REGISTRY_USERNAME"`
 	PrivateRegistryPassword string `envconfig:"PLUGIN_PRIVATE_REGISTRY_PASSWORD"`
@@ -38,12 +40,6 @@ func Exec(ctx context.Context, args Args) error {
 		}
 	}
 
-	if args.PrivateRegistryURL != "" {
-		if err := loginToPrivateRegistry(args); err != nil {
-			return err
-		}
-	}
-
 	// Create the initial command slice
 	commandArgs := []string{"sam", "build"}
 
@@ -54,6 +50,9 @@ func Exec(ctx context.Context, args Args) error {
 
 	// Include the template file path
 	commandArgs = append(commandArgs, "--template-file", args.TemplateFilePath)
+	if args.ContainerEnvVarFile != "" {
+		commandArgs = append(commandArgs, "--container-env-var-file", args.ContainerEnvVarFile)
+	}
 
 	// Add the build command options by parsing them correctly respecting quotes
 	if args.BuildCommandOptions != "" {
@@ -64,7 +63,16 @@ func Exec(ctx context.Context, args Args) error {
 		commandArgs = append(commandArgs, options...)
 	}
 
-	cmd := exec.CommandContext(ctx, commandArgs[0], commandArgs[1:]...)
+	if args.PrivateRegistryURL != "" {
+		if err := loginToPrivateRegistry(ctx, args); err != nil {
+			return err
+		}
+	}
+
+	cmd, err := samCommand(ctx, commandArgs[1:])
+	if err != nil {
+		return err
+	}
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -76,17 +84,21 @@ func Exec(ctx context.Context, args Args) error {
 	return nil
 }
 
-func loginToPrivateRegistry(args Args) error {
+func loginToPrivateRegistry(ctx context.Context, args Args) error {
 	if args.PrivateRegistryUsername == "" || args.PrivateRegistryPassword == "" {
 		return fmt.Errorf("private registry credentials not provided")
 	}
-	cmd := exec.Command("docker", "login", args.PrivateRegistryURL, "--username", args.PrivateRegistryUsername, "--password", args.PrivateRegistryPassword)
+	cmd := exec.CommandContext(ctx, "docker", "login", args.PrivateRegistryURL, "--username", args.PrivateRegistryUsername, "--password-stdin")
+	cmd.Stdin = strings.NewReader(args.PrivateRegistryPassword)
+	cmd.Env = childEnvironment()
 	output, err := cmd.CombinedOutput()
+	// A registry error must not echo its credential into the plugin's logs.
+	message := strings.ReplaceAll(string(output), args.PrivateRegistryPassword, "[REDACTED]")
 	if err != nil {
-		return fmt.Errorf("error executing command: %v\nOutput:\n%s", err, output)
+		return fmt.Errorf("error executing registry login: %v\nOutput:\n%s", err, message)
 	}
 
-	fmt.Println(string(output))
+	fmt.Println(message)
 	return nil
 
 }
